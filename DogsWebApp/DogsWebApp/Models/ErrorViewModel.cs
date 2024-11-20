@@ -1,4 +1,4 @@
-namespace DogsWeb.Models
+namespace DogsWebApp.Models
 {
     public class ErrorViewModel
     {

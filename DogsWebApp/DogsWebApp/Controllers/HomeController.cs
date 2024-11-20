@@ -1,10 +1,10 @@
-﻿using DogsWeb.Models;
+﻿using DogsWebApp.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
 using System.Diagnostics;
 
-namespace DogsWeb.Controllers
+namespace DogsWebApp.Controllers
 {
     public class HomeController : Controller
     {
