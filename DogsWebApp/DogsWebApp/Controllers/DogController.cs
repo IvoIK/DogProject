@@ -1,5 +1,6 @@
 ﻿using DogsApp.Infrastructure.Data;
-
+using DogsApp.Infrastructure.Data.Entities;
+using DogsWebApp.Models.Dog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,18 @@ namespace DogsWebApp.Controllers
         // GET: DogController
         public ActionResult Index()
         {
-            return View();
+            List<DogAllViewModel> dogs = _context.Dogs.Select(dogFromDb => new DogAllViewModel
+            {
+
+                Id = dogFromDb.Id,
+                Name = dogFromDb.Name,
+                Age = dogFromDb.Age,
+                Breed = dogFromDb.Breed,
+                Picture = dogFromDb.Picture,
+
+            }).ToList();
+
+            return View(dogs);
         }
 
         // GET: DogController/Details/5
@@ -35,16 +47,29 @@ namespace DogsWebApp.Controllers
         // POST: DogController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(DogCreateViewModel blindingModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                Dog dogFromDb = new Dog
+                {
+                    Name = blindingModel.Name,
+                    Age = blindingModel.Age,
+                    Breed = blindingModel.Breed,
+                    Picture = blindingModel.Picture,
+                };
+
+                _context.Dogs.Add(dogFromDb);
+                _context.SaveChanges();
+
+                return this.RedirectToAction("Success");
             }
-            catch
-            {
-                return View();
-            }
+            return this.View();
+        }
+
+        public IActionResult Success()
+        {
+            return this.View();
         }
 
         // GET: DogController/Edit/5
