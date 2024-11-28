@@ -73,24 +73,52 @@ namespace DogsWebApp.Controllers
         }
 
         // GET: DogController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Dog? item = _context.Dogs.Find(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            DogEditViewModel dog = new DogEditViewModel()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Age = item.Age,
+                Breed = item.Breed,
+                Picture = item.Picture
+            };
+
+            return View(dog);
         }
 
         // POST: DogController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, DogEditViewModel blindingModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                Dog dog = new Dog
+                {
+                    Id = id,
+                    Name = blindingModel.Name,
+                    Age = blindingModel.Age,
+                    Breed= blindingModel.Breed,
+                    Picture = blindingModel.Picture
+                };
+                _context.Dogs.Update(dog);
+                _context.SaveChanges();
+                return this.RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(blindingModel);
         }
 
         // GET: DogController/Delete/5
