@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DogsApp.Core.Contracts;
+using DogsApp.Infrastructure.Data.Entities;
+using DogsApp.Infrastructure.Data;
 
-namespace DogsApp.Core.Contracts
+namespace DogsApp.Core.Services
 {
-    internal class Class1 : IDogService
+    public class DogService : IDogService
     {
         private readonly ApplicationDbContext _context;
 

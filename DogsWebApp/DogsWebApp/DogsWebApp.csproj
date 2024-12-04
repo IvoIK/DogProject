@@ -16,4 +16,9 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\DogsApp.Infrastructure\DogsApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\DogsApp.Core\DogsApp.Core.csproj" />
+  </ItemGroup>
+
 </Project>

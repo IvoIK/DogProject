@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DogsApp.Infrastructure.Migrations
 {
-    [DbContext(typeof(IDogService))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241120072526_InitialMigrate")]
     partial class InitialMigrate
     {

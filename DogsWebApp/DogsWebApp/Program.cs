@@ -30,7 +30,6 @@ namespace DogsWebApp
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddTransient<IDogService, DogService>();
 
             var app = builder.Build();

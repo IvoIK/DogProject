@@ -106,7 +106,7 @@ namespace DogsWebApp.Controllers
                 var updated = _dogService.UpdateDog(id, blindingModel.Name, blindingModel.Age, blindingModel.Breed, blindingModel.Picture);
 
                 if (updated)
-                { 
+                {
                     return this.RedirectToAction("Index");
                 }
             }
@@ -163,7 +163,7 @@ namespace DogsWebApp.Controllers
             var deleted = _dogService.RemoveById(id);
 
             if (deleted)
-            { 
+            {
                 return this.RedirectToAction("Index", "Dog");
             }
             else
