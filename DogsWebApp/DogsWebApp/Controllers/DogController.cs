@@ -1,4 +1,5 @@
-﻿using DogsApp.Infrastructure.Data;
+﻿using DogsApp.Core.Contracts;
+using DogsApp.Infrastructure.Data;
 using DogsApp.Infrastructure.Data.Entities;
 using DogsWebApp.Models.Dog;
 using Microsoft.AspNetCore.Http;
@@ -8,17 +9,17 @@ namespace DogsWebApp.Controllers
 {
     public class DogController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDogService _dogService;
 
-        public DogController(ApplicationDbContext context)
+        public DogController(IDogService dogsService)
         {
-            _context = context;
+            this._dogService = dogsService;
         }
 
         // GET: DogController
         public ActionResult Index(string searchStringBreed, string searchStringName)
         {
-            List<DogAllViewModel> dogs = _context.Dogs.Select(dogFromDb => new DogAllViewModel
+            List<DogAllViewModel> dogs = _dogService.GetDogs(searchStringBreed, searchStringName).Select(dogFromDb => new DogAllViewModel
             {
 
                 Id = dogFromDb.Id,
@@ -42,7 +43,7 @@ namespace DogsWebApp.Controllers
                 dogs = dogs.Where(x => x.Name.ToLower().Contains(searchStringName.ToLower())).ToList();
             }
 
-            return View(dogs);
+            return this.View(dogs);
         }
 
         // GET: DogController/Create
@@ -58,18 +59,12 @@ namespace DogsWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                Dog dogFromDb = new Dog
+                var created = _dogService.Create(blindingModel.Name, blindingModel.Age, blindingModel.Breed, blindingModel.Picture);
+
+                if (created)
                 {
-                    Name = blindingModel.Name,
-                    Age = blindingModel.Age,
-                    Breed = blindingModel.Breed,
-                    Picture = blindingModel.Picture,
-                };
-
-                _context.Dogs.Add(dogFromDb);
-                _context.SaveChanges();
-
-                return this.RedirectToAction("Success");
+                    return this.RedirectToAction("Success");
+                }
             }
             return this.View();
         }
@@ -80,14 +75,9 @@ namespace DogsWebApp.Controllers
         }
 
         // GET: DogController/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Dog? item = _context.Dogs.Find(id);
+            Dog item = _dogService.GetDogById(id);
 
             if (item == null)
             {
@@ -113,30 +103,21 @@ namespace DogsWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                Dog dog = new Dog
-                {
-                    Id = id,
-                    Name = blindingModel.Name,
-                    Age = blindingModel.Age,
-                    Breed= blindingModel.Breed,
-                    Picture = blindingModel.Picture
-                };
-                _context.Dogs.Update(dog);
-                _context.SaveChanges();
-                return this.RedirectToAction("Index");
+                var updated = _dogService.UpdateDog(id, blindingModel.Name, blindingModel.Age, blindingModel.Breed, blindingModel.Picture);
+
+                if (updated)
+                { 
+                    return this.RedirectToAction("Index");
+                }
             }
             return View(blindingModel);
         }
 
         // GET: DogController/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Dog item = _dogService.GetDogById(id);
 
-            Dog? item = _context.Dogs.Find(id);
             if (item == null)
             {
                 return NotFound();
@@ -154,14 +135,10 @@ namespace DogsWebApp.Controllers
         }
 
         // GET: DogController/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Dog item = _dogService.GetDogById(id);
 
-            Dog? item = _context.Dogs.Find(id);
             if (item == null)
             {
                 return NotFound();
@@ -181,18 +158,18 @@ namespace DogsWebApp.Controllers
         // POST: DogController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
-            Dog? item = _context.Dogs.Find(id);
+            var deleted = _dogService.RemoveById(id);
 
-            if (item == null)
-            {
-                return NotFound();
+            if (deleted)
+            { 
+                return this.RedirectToAction("Index", "Dog");
             }
-
-            _context.Dogs.Remove(item);
-            _context.SaveChanges();
-            return this.RedirectToAction("Index", "Dog");
+            else
+            {
+                return View();
+            }
         }
     }
 }
