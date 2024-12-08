@@ -14,5 +14,7 @@ namespace DogsApp.Infrastructure.Data
         }
 
         public DbSet<Dog> Dogs { get; set; }
+
+        public DbSet<Breed> Breeds { get; set; }
     }
 }

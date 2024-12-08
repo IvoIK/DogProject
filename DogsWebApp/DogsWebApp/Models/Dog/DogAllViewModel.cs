@@ -13,7 +13,7 @@ namespace DogsWebApp.Models.Dog
         public int Age { get; set; }
 
         [Display(Name = "Breed")]
-        public string Breed { get; set; } = null!;
+        public string BreedName { get; set; } = null!;
 
         [Display(Name = "Dog Picture")]
         public string? Picture { get; set; }

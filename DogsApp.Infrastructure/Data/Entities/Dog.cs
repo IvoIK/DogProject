@@ -15,8 +15,8 @@ namespace DogsApp.Infrastructure.Data.Entities
         public int Age { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string Breed { get; set; } = null!;
+        public int BreedId { get; set; }
+        public virtual Breed Breed { get; set; } = null!;
 
         public string? Picture { get; set; }
     }

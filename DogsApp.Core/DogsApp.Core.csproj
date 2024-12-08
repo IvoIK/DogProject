@@ -1,10 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-DogsWebApp-0c464176-78fe-40ba-9606-6ae211a4d0ff</UserSecretsId>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -18,8 +17,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DogsApp.Core\DogsApp.Core.csproj" />
-    <ProjectReference Include="..\..\DogsApp.Infrastructure\DogsApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\DogsApp.Infrastructure\DogsApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

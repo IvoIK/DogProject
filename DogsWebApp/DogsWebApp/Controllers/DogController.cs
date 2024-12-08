@@ -2,6 +2,7 @@
 using DogsApp.Infrastructure.Data;
 using DogsApp.Infrastructure.Data.Entities;
 using DogsWebApp.Models.Dog;
+using DogsWebApp.Models.Breed;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,63 +11,72 @@ namespace DogsWebApp.Controllers
     public class DogController : Controller
     {
         private readonly IDogService _dogService;
+        private readonly IBreedService _breedService;
 
-        public DogController(IDogService dogsService)
+        public DogController(IDogService dogsService, IBreedService breedService)
         {
             this._dogService = dogsService;
+            this._breedService = breedService;
         }
 
         // GET: DogController
         public ActionResult Index(string searchStringBreed, string searchStringName)
         {
-            List<DogAllViewModel> dogs = _dogService.GetDogs(searchStringBreed, searchStringName).Select(dogFromDb => new DogAllViewModel
+            List<DogAllViewModel> dogs = _dogService.GetDogs(searchStringBreed, searchStringName).Select(item => new DogAllViewModel
             {
 
-                Id = dogFromDb.Id,
-                Name = dogFromDb.Name,
-                Age = dogFromDb.Age,
-                Breed = dogFromDb.Breed,
-                Picture = dogFromDb.Picture,
+                Id = item.Id,
+                Name = item.Name,
+                Age = item.Age,
+                BreedName = item.Breed.Name,
+                Picture = item.Picture,
 
             }).ToList();
 
             if (!String.IsNullOrEmpty(searchStringBreed) && !String.IsNullOrEmpty(searchStringName))
             {
-                dogs = dogs.Where(x => x.Breed.ToLower().Contains(searchStringBreed.ToLower()) && x.Name.ToLower().Contains(searchStringName.ToLower())).ToList();
+                dogs = dogs.Where(x => x.BreedName.ToLower().Contains(searchStringBreed.ToLower()) && x.Name.ToLower().Contains(searchStringName.ToLower())).ToList();
             }
             else if (!String.IsNullOrEmpty(searchStringBreed))
             {
-                dogs = dogs.Where(x => x.Breed.ToLower().Contains(searchStringBreed.ToLower())).ToList();
+                dogs = dogs.Where(x => x.BreedName.ToLower().Contains(searchStringBreed.ToLower())).ToList();
             }
             else if (!String.IsNullOrEmpty(searchStringName))
             {
                 dogs = dogs.Where(x => x.Name.ToLower().Contains(searchStringName.ToLower())).ToList();
             }
 
-            return this.View(dogs);
+            return View(dogs);
         }
 
         // GET: DogController/Create
         public ActionResult Create()
         {
-            return View();
+            var dog = new DogCreateViewModel();
+            dog.Breeds = _breedService.GetAllBreeds().Select(x => new BreedPairViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+            })
+            .ToList();
+            return View(dog);
         }
 
         // POST: DogController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(DogCreateViewModel blindingModel)
+        public ActionResult Create([FromForm] DogCreateViewModel dog)
         {
             if (ModelState.IsValid)
             {
-                var created = _dogService.Create(blindingModel.Name, blindingModel.Age, blindingModel.Breed, blindingModel.Picture);
+                var createdId = _dogService.Create(dog.Name, dog.Age, dog.BreedId, dog.Picture);
 
-                if (created)
+                if (createdId)
                 {
                     return this.RedirectToAction("Success");
                 }
             }
-            return this.View();
+            return View();
         }
 
         public IActionResult Success()
@@ -89,9 +99,16 @@ namespace DogsWebApp.Controllers
                 Id = item.Id,
                 Name = item.Name,
                 Age = item.Age,
-                Breed = item.Breed,
+                BreedId = item.BreedId,
                 Picture = item.Picture
             };
+
+            dog.Breeds = _breedService.GetAllBreeds().Select(x => new BreedPairViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+            })
+             .ToList();
 
             return View(dog);
         }
@@ -103,7 +120,7 @@ namespace DogsWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var updated = _dogService.UpdateDog(id, blindingModel.Name, blindingModel.Age, blindingModel.Breed, blindingModel.Picture);
+                var updated = _dogService.UpdateDog(id, blindingModel.Name, blindingModel.Age, blindingModel.BreedId, blindingModel.Picture);
 
                 if (updated)
                 {
@@ -128,7 +145,7 @@ namespace DogsWebApp.Controllers
                 Id = item.Id,
                 Name = item.Name,
                 Age = item.Age,
-                Breed = item.Breed,
+                BreedName = item.Breed.Name,
                 Picture = item.Picture
             };
             return View(dog);
@@ -144,12 +161,12 @@ namespace DogsWebApp.Controllers
                 return NotFound();
             }
 
-            DogDeleteViewModel dog = new DogDeleteViewModel()
+            DogDetailsViewModel dog = new DogDetailsViewModel()
             {
                 Id = item.Id,
                 Name = item.Name,
                 Age = item.Age,
-                Breed = item.Breed,
+                BreedName = item.Breed.Name,
                 Picture = item.Picture
             };
             return View(dog);

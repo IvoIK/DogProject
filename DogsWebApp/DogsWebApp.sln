@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DogsWebApp", "DogsWebApp\Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DogsApp.Infrastructure", "..\DogsApp.Infrastructure\DogsApp.Infrastructure.csproj", "{117D7146-90C7-4B53-8408-D16FC23C03E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogsApp.Core", "DogsApp.Core\DogsApp.Core.csproj", "{BC2D6FD5-A0D9-4943-8269-ECFB1978B909}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DogsApp.Core", "..\DogsApp.Core\DogsApp.Core.csproj", "{BC2D6FD5-A0D9-4943-8269-ECFB1978B909}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

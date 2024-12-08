@@ -22,9 +22,14 @@
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Breed" class="control-label"></label>
-                <input asp-for="Breed" class="form-control" />
-                <span asp-validation-for="Breed" class="text-danger"></span>
+                <label asp-for="BreedId" class="control-label">Breed</label>
+                <select asp-for="BreedId" class="form-control">
+                    @foreach (var breed in Model.Breeds)
+                    {
+                        <option value="@breed.Id">@breed.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="BreedId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Picture" class="control-label"></label>
